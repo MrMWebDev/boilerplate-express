@@ -68,33 +68,34 @@ app.get("/:word/echo", (req, res) => {
 
 //#10
 
-
+app.get("/name", (req, res) => {
+  res.json({
+    name: req.query.first + " " + req.query.last
+  });
+});
 
 //#11
 
-
+app.use(bodyParser.urlencoded({ extended: false }));
 
 //#12
 
+app.post("/name", (req, res) => {
+  res.json({
+    name: req.body.first + " " + req.body.last
+  });
+});
 
 // app.use(bodyParser);
 
-// app.use(bodyParser.urlencoded({ extended: false }));
 
 
 
 
 
-// app.get("/name", (req, res) => {
-//   res.json({
-//     name: req.query.first + " " + req.query.last
-//   });
-// });
 
-// app.post("/name", (req, res) => {
-//   res.json({
-//     name: req.body.first + " " + req.body.last
-//   });
-// });
+
+
+
 
 module.exports = app;
