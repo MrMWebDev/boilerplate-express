@@ -3,37 +3,36 @@ const bodyParser = require("body-parser");
 const app = express();
 const dotenv = require("dotenv").config();
 
+//#1
 console.log("Hello Word");
 
-app.use(requestLogger);
+//#2
+// app.get("/", (req, res) => {
+//   res.send("Hello Express")
+// })
 
-app.use(bodyParser);
-
-function requestLogger(req, res, next) {
-  // Get method, path, and IP address from the request object
-  const method = req.method;
-  const path = req.path;
-  const ip = req.ip;
-
-  // Log the request information
-  console.log(`${method} ${path} - ${ip}`);
-
-  // Call next() to continue with the request-response cycle
-  next();
-}
-
-// Normal usage
-app.use(express.static(__dirname + "/public"));
-
-// Assets at the /public route
+//#4
 app.use("/public", express.static(__dirname + "/public"));
 
-app.use(bodyParser.urlencoded({ extended: false }));
+//#7
 
-app.get("/json", function (req, res) {
-  // res.json({
-  //     message: "Hello json"
-  //   });
+app.use((req, res, next) => {
+  console.log(`${req.method} ${req.path} - ${req.ip}`);
+  next();
+})
+
+//#3
+app.get("/", (req, res) => {
+  res.sendFile(__dirname + "/views/index.html")
+});
+
+//#5
+// app.get("/json", (req, res) => {
+//   res.json({ "message": "Hello json" });
+// });
+
+//#6
+app.get("/json", (req, res) => {
   let message = "Hello json";
 
   if (process.env.MESSAGE_STYLE === "uppercase") {
@@ -43,16 +42,14 @@ app.get("/json", function (req, res) {
   res.json({ message });
 });
 
-app.get(
-  "/now",
-  (req, res, next) => {
+//#8
+
+app.get("/now", (req, res, next) => {
     // adding a new property to req object
     // in the middleware function
     req.time = new Date().toString();
     next();
-  },
-
-  (req, res) => {
+  }, (req, res) => {
     // accessing the newly added property
     // in the main function
     res.send({
@@ -61,23 +58,43 @@ app.get(
   }
 );
 
+//#9
+
 app.get("/:word/echo", (req, res) => {
-  const { word } = req.params;
   res.json({
-    echo: word,
+    echo: req.params.word
   });
 });
 
-app.get("/name", (req, res) => {
-  res.json({
-    name: req.query.first + " " + req.query.last,
-  });
-});
+//#10
 
-app.post("/name", (req, res) => {
-  res.json({
-    name: req.body.first + " " + req.body.last,
-  });
-});
+
+
+//#11
+
+
+
+//#12
+
+
+// app.use(bodyParser);
+
+// app.use(bodyParser.urlencoded({ extended: false }));
+
+
+
+
+
+// app.get("/name", (req, res) => {
+//   res.json({
+//     name: req.query.first + " " + req.query.last
+//   });
+// });
+
+// app.post("/name", (req, res) => {
+//   res.json({
+//     name: req.body.first + " " + req.body.last
+//   });
+// });
 
 module.exports = app;
